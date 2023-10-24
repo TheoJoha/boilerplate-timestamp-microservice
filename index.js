@@ -8,7 +8,7 @@ var app = express();
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
-app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
+app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
@@ -19,46 +19,41 @@ app.get("/", function (req, res) {
 });
 
 
-// your first API endpoint... 
-/* app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-}); */
 
 // This is the solution for this task
 app.get("/api/:date?", function (req, res) {
-  
+
   receivedDate = req.params.date
   console.log(receivedDate)
 
-  var isDate = function(date) {
+  var isDate = function (date) {
     return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
   }
+
   if (receivedDate == undefined) {
     let emptyDate = new Date()
-    res.json({"unix": emptyDate, "utc": emptyDate.toString()})
+    res.json({ "unix": emptyDate.getTime(), "utc": emptyDate.toGMTString() })
   }
-  else if (!isDate(receivedDate)) {
-    res.json({ error : "Invalid Date" })
+  else if (isDate(receivedDate)) {
+    let date = new Date(receivedDate)
+    console.log(date.getTime())
+    res.json({ "unix": date.getTime(), "utc": date.toGMTString() })
   }
   else {
-    let date = new Date(receivedDate)
-    res.json({"unix": date, "utc": date.toString()})
+    let endTime = new Date()
+    endTime = Number(endTime.getTime())
+    let newDate = new Date(Number(receivedDate))
+    let time = newDate.getTime()
+    console.log(time, endTime)
+    if (time >= 0 && Number(time) <= endTime) {
+      res.json({ "unix": time, "utc": newDate.toGMTString() })
+
+    }
+    else {
+      res.json({ error: "Invalid Date" })
+    }
   }
 
-  /* if (req.params.date == '') {
-    date = new Date()
-  }
-  else {
-    date = Number(req.params.date)
-  }
-  console.log(date)
-  console.log(new Date())
-  console.log(Date.now())
-  console.log(new Date(0))
-  const dateEpochTime = new Date(date); // passing epoch timestamp
-  console.log(dateEpochTime)
-  res.json({"unix": date, "utc": dateEpochTime.toString()}) */
-  
 });
 
 
