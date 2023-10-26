@@ -4,6 +4,8 @@
 // init project
 var express = require('express');
 var app = express();
+const PORT = process.env.PORT || 3030;
+
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -32,12 +34,12 @@ app.get("/api/:date?", function (req, res) {
 
   if (receivedDate == undefined) {
     let emptyDate = new Date()
-    res.json({ "unix": emptyDate.getTime(), "utc": emptyDate.toGMTString() })
+    res.json({ "unix": Number(emptyDate.getTime()), "utc": emptyDate.toGMTString() })
   }
   else if (isDate(receivedDate)) {
     let date = new Date(receivedDate)
     console.log(date.getTime())
-    res.json({ "unix": date.getTime(), "utc": date.toGMTString() })
+    res.json({ "unix": Number(date.getTime()), "utc": date.toGMTString() })
   }
   else {
     let endTime = new Date()
@@ -46,7 +48,7 @@ app.get("/api/:date?", function (req, res) {
     let time = newDate.getTime()
     console.log(time, endTime)
     if (time >= 0 && Number(time) <= endTime) {
-      res.json({ "unix": time, "utc": newDate.toGMTString() })
+      res.json({ "unix": Number(time), "utc": newDate.toGMTString() })
 
     }
     else {
@@ -59,6 +61,6 @@ app.get("/api/:date?", function (req, res) {
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
